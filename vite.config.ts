@@ -14,6 +14,18 @@ export default defineConfig(({ mode }) => ({
       input: {
         main: path.resolve(__dirname, "index.html"),
         popup: path.resolve(__dirname, "popup.html"),
+  // extension entry points (background & content script)
+  background: path.resolve(__dirname, "src/extension/background.tsx"),
+  "content-script": path.resolve(__dirname, "src/extension/content-script.tsx"),
+      },
+      output: {
+        // emit entry files with stable names at dist/ so manifest can refer to them directly
+        entryFileNames: (chunk) => {
+          // keep HTML entries handled separately; name entries by their input key
+          return `${chunk.name}.js`;
+        },
+        chunkFileNames: "assets/[name]-[hash].js",
+        assetFileNames: "assets/[name]-[hash].[ext]",
       },
     },
   },

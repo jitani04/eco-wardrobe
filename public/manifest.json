@@ -15,6 +15,10 @@
       "128": "placeholder.svg"
     }
   },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "icons": {
     "16": "placeholder.svg",
     "48": "placeholder.svg",
