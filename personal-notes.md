@@ -77,3 +77,5 @@ so what does each file do?
     )
     ```
     * this is the standard Reacat bootstrap
+
+I just run this whenever i want to test a new build: rm -rf dist && npm run build

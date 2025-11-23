@@ -249,12 +249,6 @@ export const ExtensionPopup = () => {
                     <ExternalLink className="w-3 h-3 text-muted-foreground" />
                   </div>
                 </a>
-              // <div key={i} className="p-2 border rounded-lg text-sm">
-              //   <div className="font-medium">{b.brand_name}</div>
-              //   <div className="text-xs text-muted-foreground">
-              //     Score: {b.overall_score}
-              //   </div>
-              // </div>
             ))}
           </div>
         ) : null}
