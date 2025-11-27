@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [profile, setProfile] = useState<{ first_name: string | null; last_name: string | null; } | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -34,10 +35,30 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+  const fetchProfile = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("first_name, last_name")
+      .eq("id", user.id)
+      .single();
+
+    if (!error && data) {
+      setProfile(data);
+    }
+  };
+
+  fetchProfile();
+}, [user]);
+
+  useEffect(() => {
     if (!isLoading && !user) {
       navigate("/auth");
     }
   }, [user, isLoading, navigate]);
+
+
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -84,7 +105,9 @@ const Dashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back!</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Welcome back{profile?.first_name ? `, ${profile.first_name} ${profile.last_name ?? ""}` : ""}!
+          </h1>
           <p className="text-muted-foreground">{user.email}</p>
         </div>
 

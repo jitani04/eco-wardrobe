@@ -18,6 +18,8 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -29,7 +31,7 @@ const Auth = () => {
       const validated = authSchema.parse({ email, password });
       const redirectUrl = `${window.location.origin}/dashboard`;
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: validated.email,
         password: validated.password,
         options: {
@@ -52,6 +54,14 @@ const Auth = () => {
           });
         }
       } else {
+        const user = data.user;
+
+        await supabase.from("profiles").insert({
+          id: user.id,
+          first_name: firstName,
+          last_name: lastName,
+        });
+
         toast({
           title: "Success!",
           description: "Account created. Redirecting to dashboard...",
@@ -169,6 +179,29 @@ const Auth = () => {
 
           <TabsContent value="signup">
             <form onSubmit={handleSignUp} className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">First Name</label>
+                <Input
+                  type="text"
+                  placeholder="First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">Last Name</label>
+                <Input
+                  type="text"
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
               <div className="space-y-2">
                 <label htmlFor="signup-email" className="text-sm font-medium text-foreground">
                   Email
