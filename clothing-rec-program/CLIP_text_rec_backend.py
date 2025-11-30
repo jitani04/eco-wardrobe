@@ -149,7 +149,7 @@ async def search(
     used_color = user_color.lower() if user_color else pred_color
     used_type = user_type.lower() if user_type else pred_type
 
-    # Optional: snap user overrides to our vocab
+    # snap user overrides to our vocab (if the user types in something that does not make sense, it wont mess up the results)
     def snap_to_vocab(value: str, vocab):
         if value is None:
             return None
@@ -162,7 +162,7 @@ async def search(
     used_color = snap_to_vocab(used_color, CLOTHING_COLORS) if used_color else None
     used_type = snap_to_vocab(used_type, CLOTHING_TYPES) if used_type else None
 
-    # Call hybrid RPC
+    # Call hybrid RPC (Remote Procedure Call) (PosgresSQL function that you can call from your backend as if it were an API endpoint)
     rpc_payload = {
         "query_embedding": emb_list,
         "match_count": k,
