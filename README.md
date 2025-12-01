@@ -16,10 +16,13 @@ After the build completes, the output will be in `frontend/dist/` In Chrome/Edge
 
 
 # Step 4: Run the backend server
+cd backend
+create a python venv
 install dependencies from requirements.txt
 pip install -r requirements.txt
 
-use this command to run the backend:
+use these command to run the backend:
+cd clothing-rec-program
 uvicorn CLIP_text_rec_backend:app --reload
 
 go to the link to access the backend and test it out, click on the /search endpoint and upload an image of a product image:
