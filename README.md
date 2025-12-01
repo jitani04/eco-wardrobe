@@ -20,6 +20,13 @@ cd backend
 create a python venv
 install dependencies from requirements.txt
 pip install -r requirements.txt
+    if you cant run the requirements.txt file, run these commands manually:
+        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+        pip install Pillow requests python-dotenv supabase ftfy regex timm
+        pip install git+https://github.com/openai/CLIP.git
+        pip install fastapi uvicorn
+        pip install python-multipart
+        pip install numpy==1.26.4
 
 use these command to run the backend:
 cd clothing-rec-program
