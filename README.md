@@ -58,3 +58,5 @@ you can now go to your favorite online clothing website and test the extension o
 - Python
 - shadcn-ui
 - Tailwind CSS
+<img width="500" height="500" alt="EcoMatch" src="https://github.com/user-attachments/assets/d07495de-9937-489c-a0c0-6be273933543" />
+
