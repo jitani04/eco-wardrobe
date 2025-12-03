@@ -123,7 +123,7 @@ def root():
 @app.post("/search")
 async def search(
     file: UploadFile = File(...),
-    k: int = Query(10, description="Number of results to return"),
+    k: int = Query(5, description="Number of results to return"),
     user_color: Optional[str] = Query(None, description="Override predicted color"),
     user_type: Optional[str] = Query(None, description="Override predicted garment type"),
 ):
