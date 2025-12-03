@@ -1,9 +1,8 @@
 import * as React from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Leaf, Settings } from "lucide-react";
 import { ExternalLink } from "lucide-react";
+import { useEffect } from "react";
 
 // `chrome` may not be available in non-extension contexts; declare for TS
 declare const chrome: any;
@@ -162,6 +161,10 @@ export const ExtensionPopup = () => {
     }
   };
 
+  useEffect(() => {
+    getBrandScore();
+  }, []);
+
   const getRecommendations = () => {
     setRecsLoading(true);
     setError(null);
@@ -273,13 +276,16 @@ export const ExtensionPopup = () => {
     <Card className="w-80 p-5 space-y-4 border-2 shadow-xl">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-earth-moss flex items-center justify-center">
-            <Leaf className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <img src="/favicon-96x96.png" alt="EcoStyle logo" className="w-8 h-8 rounded" />
           <h2 className="font-semibold text-lg text-foreground">EcoStyle</h2>
         </div>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
-          <Settings className="w-4 h-4" />
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 px-2 text-xs"
+          onClick={openDashboard}
+        >
+          Dashboard
         </Button>
       </div> {/* close header div (logo + settings) */}
 
@@ -304,63 +310,54 @@ export const ExtensionPopup = () => {
         </div>
 
         <div className="space-y-1">
-          <Button onClick={getBrandScore} className="w-full bg-gradient-to-br from-primary to-earth-moss text-primary-foreground hover:opacity-90 transition-opacity">
-            Get Brand Score
-          </Button>
           <Button onClick={getRecommendations} className="w-full bg-gradient-to-br from-primary to-earth-moss text-primary-foreground hover:opacity-90 transition-opacity">
             Show Recommended Brands
-          </Button>
-          <Button onClick={openDashboard} className="w-full bg-gradient-to-br from-primary to-earth-moss text-primary-foreground hover:opacity-90 transition-opacity">
-            View Full Dashboard
           </Button>
           <Button onClick={captureProductImage} className="w-full bg-gradient-to-br from-primary to-earth-moss text-primary-foreground hover:opacity-90 transition-opacity">
             See similar sustainable pieces
           </Button>
         </div>
 
-        {/* Small capture preview */}
-        <div className="flex flex-col items-center">
-          {imgLoading ? (
-            <div className="text-sm text-muted-foreground animate-pulse">Finding similar cute pieces…</div>
-          ) : productImage ? (
-            <img src={productImage} alt="Captured product" className="w-16 h-16 object-cover rounded mb-2" />
-          ) : null}
-        </div>
-
-        {similarLoading ? (
-          <div className="text-sm text-muted-foreground text-center animate-pulse">Finding similar cute pieces…</div>
+        {imgLoading || similarLoading ? (
+          <div className="text-sm text-muted-foreground text-center animate-pulse">Finding similar pieces…</div>
         ) : null}
 
         {!similarLoading && similarItems.length > 0 ? (
           <div className="w-full space-y-2">
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Similar sustainable pieces</div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 gap-3">
             {similarItems.map((item, idx) => {
               const similarity = Number.isFinite(item.score) ? Math.round(item.score * 100) : null;
               const src = item.image_url || item.image_path || '';
               const productUrl = (item as any).item_url || (item as any).product_url || (item as any).page_url || item.image_url || '';
+              const brand = (item as any).brand_name || null;
+              const price = (item as any)(item as any).price_usd || null;
               return (
-                <div key={`similar-${idx}`} className="flex flex-col items-center text-center">
+                <div key={`similar-${idx}`} className="flex flex-col items-start gap-2 rounded border bg-card p-2 shadow-sm">
                   {src ? (
                     <img
                       src={src}
                       alt="Similar sustainable piece"
-                      className="w-20 h-20 object-cover rounded border"
+                      className="w-full object-cover rounded border max-h-52"
                     />
                   ) : (
-                    <div className="w-20 h-20 rounded border flex items-center justify-center text-[10px] text-muted-foreground">
+                    <div className="w-full h-40 rounded border flex items-center justify-center text-[10px] text-muted-foreground">
                       No image
                     </div>
                   )}
+                  <div className="space-y-1 text-sm">
+                    {brand ? <div className="font-medium text-foreground">{brand}</div> : null}
+                    {price ? <div className="text-muted-foreground text-xs">${price}</div> : null}
+                  </div>
                   {similarity !== null ? (
-                    <span className="mt-1 text-xs text-muted-foreground">{similarity}% match</span>
+                    <span className="text-xs text-muted-foreground">Match: {similarity}%</span>
                   ) : null}
                   {productUrl ? (
                     <a
                       href={productUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-1 text-[10px] px-2 py-1 border rounded hover:bg-muted/20"
+                      className="text-[10px] px-2 py-1 border rounded hover:bg-muted/20"
                       title="Open product page in new tab"
                     >
                       Open in new tab
